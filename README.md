@@ -1,16 +1,73 @@
-# RiskNet
+# RiskNet — ML & Data Engineering
 
-Graph-based fraud investigation and case management platform for AML alert investigation.
+## Overview
 
-## Modules
-- `backend/` — Spring Boot REST APIs, PostgreSQL, Neo4j
-- `frontend/` — React dashboard, Cytoscape.js graph visualization
-- `ml/` — Databricks preprocessing pipeline, Isolation Forest scoring
+This module is responsible for preprocessing the Bank Account Fraud (BAF) dataset, augmenting applicant relationships, and preparing graph data for Neo4j. It generates graph-ready CSV files that are later imported into Neo4j for fraud network analysis.
 
-## Team
-- Member 1: Backend & Case Management
-- Member 2: Graph Construction & ML Pipeline
-- Member 3: Frontend & Investigation UI
+---
+
+## Notebooks
+
+| Notebook                       | Purpose                                                                                                                     |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| `Data_augmentation.ipynb`      | Cleans the BAF dataset and augments it with `ApplicantID`, `AlertID`, `DeviceID`, `IPAddress`, and `RegistrationTimestamp`. |
+| `Graph_data_preparation.ipynb` | Generates Neo4j node and relationship CSV files from the augmented dataset.                                                 |
+
+---
 
 ## Dataset
-Bank Account Fraud (BAF) NeurIPS Benchmark Dataset
+
+* **Bank Account Fraud (BAF) NeurIPS Benchmark**
+* **Records:** 1,000,000
+
+---
+
+## Output
+
+All generated datasets are stored in the Databricks Unity Catalog Volume:
+
+```text
+/Volumes/risknet_catalog/risknet/risknet_volume/
+```
+
+### Graph Export
+
+```text
+graph_export/
+├── applicant_nodes/
+├── alert_nodes/
+├── device_nodes/
+├── ip_nodes/
+├── applicant_device_relationships/
+├── applicant_ip_relationships/
+└── alert_applicant_relationships/
+```
+
+Each folder contains Neo4j-compatible CSV files exported from Databricks.
+
+---
+
+## Graph Model
+
+```text
+(Applicant)-[:USES_DEVICE]->(Device)
+(Applicant)-[:USES_IP]->(IP)
+(Alert)-[:GENERATED_FOR]->(Applicant)
+```
+
+---
+
+## Tech Stack
+
+* Databricks
+* Apache Spark (PySpark)
+* Delta Lake
+* Unity Catalog Volumes
+* Neo4j
+
+---
+
+## Notes
+
+* Databricks access is required to execute the notebooks and generate the exported graph CSV files.
+* Backend and frontend contributors do **not** require Databricks access. They can use the project schema, API contracts, and exported datasets for integration.
