@@ -184,3 +184,19 @@ CREATE TABLE applicant_ip (
         REFERENCES ip_address(ip_id)
         ON DELETE CASCADE
 );
+
+
+
+--------------------------------Table 10: risk_assessment--------------------------------------
+
+CREATE TABLE risk_assessment (
+                                 assessment_id UUID PRIMARY KEY,
+                                 applicant_id UUID REFERENCES applicant(applicant_id),
+                                 isolation_forest_score NUMERIC(6,4),
+                                 risk_score NUMERIC(5,2),
+                                 risk_level VARCHAR(20),
+                                 degree_centrality NUMERIC(8,6),
+                                 community_id INTEGER,
+                                 connected_applicants INTEGER,
+                                 assessed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
