@@ -24,7 +24,7 @@ CREATE TABLE alert (
     risk_score NUMERIC(5,2) NOT NULL,
     risk_level VARCHAR(20) NOT NULL,
     alert_type VARCHAR(50),
-    is_false_positive BOOLEAN DEFAULT FALSE,
+    is_false_positive BOOLEAN,
     status VARCHAR(20) DEFAULT 'OPEN',
     generated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
@@ -38,31 +38,15 @@ CREATE TABLE alert (
 -----------------------Table 3: device------------------------
 
 CREATE TABLE device (
-    device_id UUID PRIMARY KEY,
-    device_fingerprint VARCHAR(255) UNIQUE NOT NULL,
-    device_type VARCHAR(50),
-    operating_system VARCHAR(50),
-    browser VARCHAR(50),
-    first_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        device_id VARCHAR(50) PRIMARY KEY
 );
-
 
 
 ----------------------- Table 4: ip_address -----------------------
 
 CREATE TABLE ip_address (
-    ip_id UUID PRIMARY KEY,
-    ip_address VARCHAR(45) UNIQUE NOT NULL,
-    ip_version VARCHAR(10),
-    country VARCHAR(100),
-    region VARCHAR(100),
-    city VARCHAR(100),
-    is_vpn BOOLEAN DEFAULT FALSE,
-    first_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ip_address VARCHAR(45) PRIMARY KEY
 );
-
 
 
 
@@ -148,7 +132,7 @@ CREATE TABLE audit_log (
 
 CREATE TABLE applicant_device (
     applicant_id UUID NOT NULL,
-    device_id UUID NOT NULL,
+    device_id VARCHAR(50) NOT NULL,
 
     PRIMARY KEY (applicant_id, device_id),
 
@@ -169,20 +153,20 @@ CREATE TABLE applicant_device (
 ------------------------ Table 9: applicant_ip  -----------------------
 
 CREATE TABLE applicant_ip (
-    applicant_id UUID NOT NULL,
-    ip_id UUID NOT NULL,
+                              applicant_id UUID NOT NULL,
+                              ip_address VARCHAR(45) NOT NULL,
 
-    PRIMARY KEY (applicant_id, ip_id),
+                              PRIMARY KEY (applicant_id, ip_address),
 
-    CONSTRAINT fk_applicant_ip_applicant
-        FOREIGN KEY (applicant_id)
-        REFERENCES applicant(applicant_id)
-        ON DELETE CASCADE,
+                              CONSTRAINT fk_applicant_ip_applicant
+                                  FOREIGN KEY (applicant_id)
+                                      REFERENCES applicant(applicant_id)
+                                      ON DELETE CASCADE,
 
-    CONSTRAINT fk_applicant_ip_ip
-        FOREIGN KEY (ip_id)
-        REFERENCES ip_address(ip_id)
-        ON DELETE CASCADE
+                              CONSTRAINT fk_applicant_ip_ip
+                                  FOREIGN KEY (ip_address)
+                                      REFERENCES ip_address(ip_address)
+                                      ON DELETE CASCADE
 );
 
 
